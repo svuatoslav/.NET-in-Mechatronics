@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     private bool _jump = false;
     private Rigidbody _rb = null;
 
-    public int HP { get { return _hp; } set { _hp += value; } }
+    public int HP { get { return _hp; } set { _hp += value; PlayerDestroy(); } }
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
             _fire = true;
         _direction.z = Input.GetAxis("Vertical");
         _direction.x = Input.GetAxis("Horizontal");//jump
+        //_direction.y = Input.GetAxis("Jump");
+        
     }
     private void FixedUpdate()
     {
@@ -49,7 +51,7 @@ public class Player : MonoBehaviour
     }
     private void PlayerDestroy()
     {
-        if(_hp <= 0)
+        if (_hp <= 0)
             Destroy(gameObject);
     }
 
