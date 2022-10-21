@@ -9,12 +9,9 @@ public sealed class Bullet : MonoBehaviour
     private int _damage;
     public void Init(int damage, Vector3 target)
     {
-         _damage = damage;
+        _damage = damage;
         _target = target;
         Destroy(gameObject, 5);// replace collision 
     }
-    private void Update()
-    {
-        transform.position = Vector3.MoveTowards(transform.position, _target, _speed * Time.deltaTime);
-    }
+    private void Update() => transform.Translate(_speed * Time.deltaTime * _target, Space.World);
 }
