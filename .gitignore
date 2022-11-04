@@ -22,6 +22,9 @@
 # Visual Studio cache directory
 .vs/
 
+# NuGet Analysis for VS Code
+NuGet/*
+
 # Gradle cache directory
 .gradle/
 
