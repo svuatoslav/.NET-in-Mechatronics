@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class LaserTurret : MonoBehaviour
@@ -10,13 +11,15 @@ public class LaserTurret : MonoBehaviour
     private Mesh _mesh;
     private Vector3[] _vertices;
     private int[] _triangles;
-    private float _funHeight = 0.5f;
+    private float _funHeight = 0f;
     private float _summAngle = 0f;
+    private float _r = 0.5f;
     private const int _around = 360;
     private const int _numbDivisions = 30;
-    private const float _r = 1f;
     private delegate float _x_t(float a, float phi);
     private delegate float _z_t(float b, float phi);
+    private delegate float _y_t(float phi);
+    private delegate float _z_t_vert(float phi);
 
     private void Start()
     {
@@ -29,11 +32,65 @@ public class LaserTurret : MonoBehaviour
         _mesh.name = "Turret";
         _x_t xt = X_t;
         _z_t zt = Z_t;
-        _vertex.Add(new Vector3(0f, 0f, 0f));
+        _y_t yt = Y_t;
+        _z_t_vert ztvert = Z_t_vert;
+        _vertex.Add(new Vector3(0f, _funHeight, 0f));
         for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
         {
-            _vertex.Add(new Vector3(xt(_r, _summAngle), 0f, zt(_r, _summAngle)));
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
         }
+        _funHeight += 0.1f;
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
+        }
+        _funHeight += 0.1f;
+        _r -= 0.1f;
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
+        }
+        _funHeight += 0.5f;
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
+        }
+        // Head
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
+        }
+        _funHeight += 0.1f;
+        _r += 0.1f;
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
+        }
+        _funHeight += 0.3f;
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
+        }
+        _funHeight += 0.1f;
+        _r -= 0.1f;
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(xt(_r, _summAngle), _funHeight, zt(_r, _summAngle)));
+        }
+        _vertex.Add(new Vector3(0f, _funHeight, 0f));
+        Debug.Log(_vertex.Count);
+        //weapon
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(0.25f, yt(_summAngle) + _funHeight - 1.5f, ztvert(_summAngle)));
+        }
+        for (_summAngle = 0f; _summAngle < _around; _summAngle += _around / _numbDivisions)
+        {
+            _vertex.Add(new Vector3(1.25f, yt(_summAngle) + _funHeight - 1.5f, ztvert(_summAngle)));
+        }
+
+
+        //
         _vertices = new Vector3[_vertex.Count];
         for (int i = 0; i < _vertex.Count; i++)
         {
@@ -57,14 +114,13 @@ public class LaserTurret : MonoBehaviour
         _mesh.triangles = _triangles;
         _mesh.vertices = _vertices;
         GetComponent<MeshCollider>().sharedMesh = _mesh;
-        //AssetDatabase.CreateAsset(_mesh, "Assets/Meshs/Ellips.asset");
-
-
-
         _mesh.RecalculateNormals();
+        AssetDatabase.CreateAsset(_mesh, "Assets/Meshs/Turret.asset");
     }
     private float X_t(float a, float t) => a * Mathf.Cos(t * Mathf.Deg2Rad);
     private float Z_t(float b, float t) => b * Mathf.Sin(t * Mathf.Deg2Rad);
+    private float Z_t_vert(float t) => 0.1f * Mathf.Cos(t * Mathf.Deg2Rad);
+    private float Y_t(float t) => 0.1f * Mathf.Sin(t * Mathf.Deg2Rad);
     private void OnDrawGizmos()
     {
         if (_vertex == null)
@@ -72,7 +128,7 @@ public class LaserTurret : MonoBehaviour
         Gizmos.color = Color.red;
         for (int i = 0; i < _vertex.Count; i++)
         {
-            Gizmos.DrawSphere(_vertex[i], 0.1f);
+            Gizmos.DrawSphere(_vertex[i], 0.01f);
         }
     }
 }
