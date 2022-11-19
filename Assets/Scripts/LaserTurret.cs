@@ -23,8 +23,8 @@ public class LaserTurret : MonoBehaviour
 
     private void Start()
     {
-        Generate();
-        GenerateHeadWeapon();
+        //Generate();
+        //GenerateHeadWeapon();
     }
     private void Generate()
     {
@@ -185,6 +185,7 @@ public class LaserTurret : MonoBehaviour
         {
             _vertex.Add(new Vector3(1.25f, yt(_summAngle) + _funHeight - 0.25f, ztvert(_summAngle)));
         }
+        _vertex.Add(new Vector3(1.25f, _funHeight - 0.25f, 0f));
         //
         _vertices = new Vector3[_vertex.Count];
         for (int i = 0; i < _vertex.Count; i++)
@@ -245,7 +246,7 @@ public class LaserTurret : MonoBehaviour
         _triangl.Add(_numbDivisions*3+1);
         _triangl.Add(_numbDivisions*3);
         _triangl.Add(_numbDivisions*3+1);
-        _triangl.Add(_numbDivisions*2+1);
+        _triangl.Add(_numbDivisions * 2 + 1);
         for (int i = _numbDivisions*3; i < _numbDivisions*4 - 1; i++)
         {
             _triangl.Add(i + 2);
@@ -255,7 +256,32 @@ public class LaserTurret : MonoBehaviour
         _triangl.Add(_numbDivisions*3+1);
         _triangl.Add(_numbDivisions*4);
         _triangl.Add(_numbDivisions*4+1);
-        
+
+        for (int i = _numbDivisions * 4+2; i < _numbDivisions * 5+1; i++)
+        {
+            _triangl.Add(i);
+            _triangl.Add(_numbDivisions + i);
+            _triangl.Add(_numbDivisions + i + 1);
+            _triangl.Add(i);
+            _triangl.Add(_numbDivisions + i + 1);
+            _triangl.Add(i + 1);
+        }
+        _triangl.Add(_numbDivisions * 5 + 1);
+        _triangl.Add(_numbDivisions * 6 + 1);
+        _triangl.Add(_numbDivisions * 5 + 2);
+        _triangl.Add(_numbDivisions * 5 + 1);
+        _triangl.Add(_numbDivisions * 5 + 2);
+        _triangl.Add(_numbDivisions * 4 + 2);
+
+        for (int i = _numbDivisions * 5 + 1; i < _numbDivisions * 6 + 1; i++)
+        {
+            _triangl.Add(i + 2);
+            _triangl.Add(i + 1);
+            _triangl.Add(_vertex.Count-1);
+        }
+        _triangl.Add(_numbDivisions * 5 + 2);
+        _triangl.Add(_vertex.Count - 2);
+        _triangl.Add(_vertex.Count - 1);
 
         _triangles = new int[_triangl.Count];
         for (int i = 0; i < _triangl.Count; i++)
@@ -271,14 +297,16 @@ public class LaserTurret : MonoBehaviour
     private float Z_t(float b, float t) => b * Mathf.Sin(t * Mathf.Deg2Rad);
     private float Z_t_vert(float t) => 0.1f * Mathf.Cos(t * Mathf.Deg2Rad);
     private float Y_t(float t) => 0.1f * Mathf.Sin(t * Mathf.Deg2Rad);
-    private void OnDrawGizmos()
-    {
-        if (_vertex == null)
-            return;
-        Gizmos.color = Color.red;
-        for (int i = 0; i < _vertex.Count; i++)
-        {
-            Gizmos.DrawSphere(_vertex[i], 0.01f);
-        }
-    }
+
+
+    //private void OnDrawGizmos()
+    //{
+    //    if (_vertex == null)
+    //        return;
+    //    Gizmos.color = Color.red;
+    //    for (int i = 0; i < _vertex.Count; i++)
+    //    {
+    //        Gizmos.DrawSphere(_vertex[i], 0.01f);
+    //    }
+    //}
 }
