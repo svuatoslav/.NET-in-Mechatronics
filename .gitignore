@@ -22,7 +22,7 @@
 # Visual Studio cache directory
 .vs/
 .vscode/
-
+*.dwlt
 # NuGet Analysis for VS Code
 NuGet/*
 
@@ -62,4 +62,3 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-*.dwlt
